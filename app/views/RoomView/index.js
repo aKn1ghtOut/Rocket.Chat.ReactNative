@@ -34,7 +34,6 @@ import StatusBar from '../../containers/StatusBar';
 import Separator from './Separator';
 import { themes } from '../../constants/colors';
 import debounce from '../../utils/debounce';
-import ReactionsModal from '../../containers/ReactionsModal';
 import { LISTENER } from '../../containers/Toast';
 import { getBadgeColor, isBlocked, makeThreadName } from '../../utils/room';
 import { isReadOnly } from '../../utils/isReadOnly';
@@ -64,7 +63,6 @@ import { takeInquiry } from '../../ee/omnichannel/lib';
 const stateAttrsUpdate = [
 	'joined',
 	'lastOpen',
-	'reactionsModalVisible',
 	'canAutoTranslate',
 	'selectedMessage',
 	'loading',
@@ -125,7 +123,6 @@ class RoomView extends React.Component {
 			roomUpdate: {},
 			member: {},
 			lastOpen: null,
-			reactionsModalVisible: false,
 			selectedMessage: selectedMessage || {},
 			canAutoTranslate: false,
 			loading: true,
@@ -587,12 +584,12 @@ class RoomView extends React.Component {
 	};
 
 	onReactionLongPress = (message) => {
-		this.setState({ selectedMessage: message, reactionsModalVisible: true });
+		const { navigation } = this.props;
+		const options = {
+			reactions: message.reactions || []
+		};
+		navigation.navigate('ReactionsView', options);
 		Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-	}
-
-	onCloseReactionsModal = () => {
-		this.setState({ selectedMessage: {}, reactionsModalVisible: false });
 	}
 
 	onEncryptedPress = () => {
@@ -1037,7 +1034,7 @@ class RoomView extends React.Component {
 	render() {
 		console.count(`${ this.constructor.name }.render calls`);
 		const {
-			room, reactionsModalVisible, selectedMessage, loading, reacting
+			room, selectedMessage, loading, reacting
 		} = this.state;
 		const {
 			user, baseUrl, theme, navigation, Hide_System_Messages, width, height
@@ -1087,14 +1084,6 @@ class RoomView extends React.Component {
 					theme={theme}
 				/>
 				<UploadProgress rid={this.rid} user={user} baseUrl={baseUrl} width={width} />
-				<ReactionsModal
-					message={selectedMessage}
-					isVisible={reactionsModalVisible}
-					user={user}
-					baseUrl={baseUrl}
-					onClose={this.onCloseReactionsModal}
-					getCustomEmoji={this.getCustomEmoji}
-				/>
 				<JoinCode
 					ref={this.joinCode}
 					onJoin={this.onJoin}

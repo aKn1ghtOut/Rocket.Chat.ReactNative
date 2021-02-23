@@ -67,6 +67,7 @@ import ModalBlockView from '../views/ModalBlockView';
 import JitsiMeetView from '../views/JitsiMeetView';
 import StatusView from '../views/StatusView';
 import ShareView from '../views/ShareView';
+import ReactionsView from '../views/ReactionsView';
 import CreateDiscussionView from '../views/CreateDiscussionView';
 
 import QueueListView from '../ee/omnichannel/views/QueueListView';
@@ -414,6 +415,11 @@ const InsideStackNavigator = () => {
 				name='JitsiMeetView'
 				component={JitsiMeetView}
 				options={{ headerShown: false }}
+			/>
+			<InsideStack.Screen
+				name='ReactionsView'
+				component={ReactionsView}
+				options={ReactionsView.navigationOptions}
 			/>
 		</InsideStack.Navigator>
 	);

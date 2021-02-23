@@ -55,6 +55,7 @@ import CreateDiscussionView from '../../views/CreateDiscussionView';
 import E2ESaveYourPasswordView from '../../views/E2ESaveYourPasswordView';
 import E2EHowItWorksView from '../../views/E2EHowItWorksView';
 import E2EEnterYourPasswordView from '../../views/E2EEnterYourPasswordView';
+import ReactionsView from '../../views/ReactionsView';
 
 import { setKeyCommands, deleteKeyCommands } from '../../commands';
 import ShareView from '../../views/ShareView';
@@ -337,6 +338,11 @@ const InsideStackNavigator = React.memo(() => {
 			<InsideStack.Screen
 				name='ShareView'
 				component={ShareView}
+			/>
+			<InsideStack.Screen
+				name='ReactionsView'
+				component={ReactionsView}
+				options={ReactionsView.navigationOptions}
 			/>
 		</InsideStack.Navigator>
 	);
