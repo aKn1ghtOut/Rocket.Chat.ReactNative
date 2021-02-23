@@ -9,7 +9,7 @@ import styles from './styles';
 import scrollPersistTaps from '../../utils/scrollPersistTaps';
 import Avatar from '../../containers/Avatar';
 
-const UserItem = ({
+const UserItem = React.memo(({
 	username, name, theme
 }) => (
 	<View style={styles.userRow}>
@@ -21,9 +21,9 @@ const UserItem = ({
 		/>
 		<Text style={[styles.textBold, styles.userTitle, { color: themes[theme].bodyText }]}>{name}</Text>
 	</View>
-);
+));
 
-const TabPage = ({ reaction, theme }) => {
+const TabPage = React.memo(({ reaction, theme }) => {
 	const names = reaction.names || reaction.usernames;
 	return (
 		<ScrollView
@@ -36,7 +36,7 @@ const TabPage = ({ reaction, theme }) => {
 			}
 		</ScrollView>
 	);
-};
+});
 
 UserItem.propTypes = {
 	username: PropTypes.string,

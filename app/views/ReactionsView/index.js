@@ -22,7 +22,7 @@ const scrollProps = {
 	keyboardDismissMode: 'none'
 };
 
-const RenderLabel = ({
+const RenderLabel = React.memo(({
 	name, baseUrl, getCustomEmoji, reactions, page, theme
 }) => (
 	<View style={sharedStyles.tabView}>
@@ -35,7 +35,7 @@ const RenderLabel = ({
 		/>
 		<Text style={[sharedStyles.textBold, { color: themes[theme].bodyText }]}>{reactions[page].usernames.length}</Text>
 	</View>
-);
+));
 
 const renderTab = (getCustomEmoji, baseUrl, reactions, theme) => (
 	name, page, isTabActive, onPressHandler, onLayoutHandler
@@ -52,7 +52,7 @@ const renderTab = (getCustomEmoji, baseUrl, reactions, theme) => (
 	</TouchableOpacity>
 );
 
-const ReactionsView = ({
+const ReactionsView = React.memo(({
 	navigation, theme, route, baseUrl, customEmojis
 }) => {
 	const reactions = route.params?.reactions || [];
@@ -84,7 +84,7 @@ const ReactionsView = ({
 			</SafeAreaView>
 		</View>
 	);
-};
+});
 
 RenderLabel.propTypes = {
 	reactions: PropTypes.object,
