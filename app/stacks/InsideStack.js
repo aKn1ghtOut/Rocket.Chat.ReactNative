@@ -29,6 +29,7 @@ import ForwardLivechatView from '../views/ForwardLivechatView';
 import LivechatEditView from '../views/LivechatEditView';
 import PickerView from '../views/PickerView';
 import ThreadMessagesView from '../views/ThreadMessagesView';
+import TeamChannelsView from '../views/TeamChannelsView';
 import MarkdownTableView from '../views/MarkdownTableView';
 import ReadReceiptsView from '../views/ReadReceiptView';
 import { themes } from '../constants/colors';
@@ -71,6 +72,9 @@ import ReactionsView from '../views/ReactionsView';
 import CreateDiscussionView from '../views/CreateDiscussionView';
 
 import QueueListView from '../ee/omnichannel/views/QueueListView';
+import AddChannelTeamView from '../views/AddChannelTeamView';
+import AddExistingChannelView from '../views/AddExistingChannelView';
+import SelectListView from '../views/SelectListView';
 
 // ChatsStackNavigator
 const ChatsStack = createStackNavigator();
@@ -90,6 +94,11 @@ const ChatsStackNavigator = () => {
 				name='RoomActionsView'
 				component={RoomActionsView}
 				options={RoomActionsView.navigationOptions}
+			/>
+			<ChatsStack.Screen
+				name='SelectListView'
+				component={SelectListView}
+				options={SelectListView.navigationOptions}
 			/>
 			<ChatsStack.Screen
 				name='RoomInfoView'
@@ -168,6 +177,26 @@ const ChatsStackNavigator = () => {
 				name='ThreadMessagesView'
 				component={ThreadMessagesView}
 				options={ThreadMessagesView.navigationOptions}
+			/>
+			<ChatsStack.Screen
+				name='TeamChannelsView'
+				component={TeamChannelsView}
+				options={TeamChannelsView.navigationOptions}
+			/>
+			<ChatsStack.Screen
+				name='CreateChannelView'
+				component={CreateChannelView}
+				options={CreateChannelView.navigationOptions}
+			/>
+			<ChatsStack.Screen
+				name='AddChannelTeamView'
+				component={AddChannelTeamView}
+				options={AddChannelTeamView.navigationOptions}
+			/>
+			<ChatsStack.Screen
+				name='AddExistingChannelView'
+				component={AddExistingChannelView}
+				options={AddExistingChannelView.navigationOptions}
 			/>
 			<ChatsStack.Screen
 				name='MarkdownTableView'
