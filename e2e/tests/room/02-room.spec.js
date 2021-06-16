@@ -232,6 +232,18 @@ describe('Room screen', () => {
 				await dismissReviewNag() //TODO: Create a proper test for this elsewhere.
 			})
 
+			it('should open reactions view', async() => {
+				await element(by.id('message-reaction-:grimacing:')).longPress();
+				await waitFor(element(by.id('reactions-view'))).toBeVisible().withTimeout(5000);
+				await waitFor(element(by.id('reaction-tab-:grinning:-active'))).toBeVisible().withTimeout(5000);
+				await waitFor(element(by.id('reaction-tab-:+1:'))).toBeVisible().withTimeout(5000);
+				await waitFor(element(by.id('reaction-tab-:grimacing:'))).toBeVisible().withTimeout(5000);
+				await element(by.id('reaction-tab-:grimacing:')).tap();
+				await waitFor(element(by.id('reaction-tab-:grimacing:-active'))).toExist().withTimeout(5000);
+				await waitFor(element(by.id('reaction-tab-:grinning:'))).toExist().withTimeout(5000);
+				await tapBack();
+			})
+
 			it('should remove reaction', async() => {
 				await element(by.id('message-reaction-:grinning:')).tap();
 				await waitFor(element(by.id('message-reaction-:grinning:'))).toBeNotVisible().withTimeout(60000);

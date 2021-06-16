@@ -42,7 +42,7 @@ const renderTab = (getCustomEmoji, baseUrl, reactions, theme) => (
 ) => (
 	<TouchableOpacity
 		activeOpacity={0.7}
-		testID={`reaction-picker-${ name }`}
+		testID={isTabActive ? `reaction-tab-${ name }-active` : `reaction-tab-${ name }`}
 		key={`${ name }_${ page }`}
 		onPress={() => onPressHandler(page)}
 		onLayout={onLayoutHandler}
@@ -71,7 +71,7 @@ const ReactionsView = React.memo(({
 
 	return (
 		<View style={[sharedStyles.container, { backgroundColor: themes[theme].backgroundColor }]}>
-			<SafeAreaView testID='profile-view'>
+			<SafeAreaView testID='reactions-view'>
 				<ScrollableTabView
 					renderTabBar={() => <ScrollableTabBar underlineStyle={{ backgroundColor: themes[theme].auxiliaryTintColor }} style={[sharedStyles.tabsContainer, { backgroundColor: themes[theme].headerBackground }]} tabsContainerStyle={sharedStyles.tabsContainer} renderTab={renderTab(getCustomEmoji, baseUrl, reactions, theme)} />}
 					contentProps={scrollProps}
