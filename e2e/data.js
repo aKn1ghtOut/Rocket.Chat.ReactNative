@@ -1,9 +1,9 @@
 const random = require('./helpers/random');
 const value = random(20);
 const data = {
-    server: 'http://localhost:3000',
-    adminUser: 'admin',
-    adminPassword: 'password',
+    server: 'https://mobile.rocket.chat',
+    adminUser: 'e2e_admin',
+    adminPassword: 'p7mFh4yLwCRXSnMvG',
     alternateServer: 'https://stable.rocket.chat',
     users: {
         regular: {
@@ -40,6 +40,14 @@ const data = {
     groups: {
         private: {
             name: `detox-private-${ value }`
+        },
+        alternate: {
+            name: `detox-alternate-${ value }`
+        }
+    },
+    teams: {
+        private: {
+            name: `detox-team-${ value }`
         }
     },
     registeringUser: {
@@ -56,6 +64,11 @@ const data = {
         username: `newuserthree${ value }`,
         password: `passwordthree${ value }`,
         email: `mobile+registeringthree${ value }@rocket.chat`
+    },
+    registeringUser4: {
+        username: `newuserfour${ value }`,
+        password: `passwordfour${ value }`,
+        email: `mobile+registeringfour${ value }@rocket.chat`
     },
     random: value
 }

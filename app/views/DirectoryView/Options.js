@@ -64,11 +64,17 @@ export default class DirectoryOptions extends PureComponent {
 			icon = 'channel-public';
 		}
 
+		if (itemType === 'teams') {
+			text = 'Teams';
+			icon = 'teams';
+		}
+
 		return (
 			<Touch
 				onPress={() => changeType(itemType)}
 				style={styles.dropdownItemButton}
 				theme={theme}
+				accessibilityLabel={I18n.t(text)}
 			>
 				<View style={styles.dropdownItemContainer}>
 					<CustomIcon style={[styles.dropdownItemIcon, { color: themes[theme].bodyText }]} size={22} name={icon} />
@@ -97,7 +103,7 @@ export default class DirectoryOptions extends PureComponent {
 					<Animated.View style={[styles.backdrop, { backgroundColor: themes[theme].backdropColor, opacity: backdropOpacity }]} />
 				</TouchableWithoutFeedback>
 				<Animated.View style={[styles.dropdownContainer, { transform: [{ translateY }], backgroundColor: themes[theme].backgroundColor }]}>
-					<Touch onPress={this.close} theme={theme}>
+					<Touch onPress={this.close} theme={theme} accessibilityLabel={I18n.t('Search_by')}>
 						<View style={[styles.dropdownContainerHeader, styles.dropdownItemContainer, { borderColor: themes[theme].separatorColor }]}>
 							<Text style={[styles.dropdownToggleText, { color: themes[theme].auxiliaryText }]}>{I18n.t('Search_by')}</Text>
 							<CustomIcon style={[styles.dropdownItemIcon, styles.inverted, { color: themes[theme].auxiliaryTintColor }]} size={22} name='chevron-down' />
@@ -105,6 +111,7 @@ export default class DirectoryOptions extends PureComponent {
 					</Touch>
 					{this.renderItem('channels')}
 					{this.renderItem('users')}
+					{this.renderItem('teams')}
 					{isFederationEnabled
 						? (
 							<>

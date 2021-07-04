@@ -3,10 +3,11 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { dequal } from 'dequal';
 
-import * as HeaderButton from '../../../containers/HeaderButton';
-import database from '../../../lib/database';
-import { getUserSelector } from '../../../selectors/login';
-import { logEvent, events } from '../../../utils/log';
+import * as HeaderButton from '../../containers/HeaderButton';
+import database from '../../lib/database';
+import { getUserSelector } from '../../selectors/login';
+import { logEvent, events } from '../../utils/log';
+import { isTeamRoom } from '../../utils/room';
 
 class RightButtonsContainer extends Component {
 	static propTypes = {
@@ -15,9 +16,11 @@ class RightButtonsContainer extends Component {
 		rid: PropTypes.string,
 		t: PropTypes.string,
 		tmid: PropTypes.string,
+		teamId: PropTypes.string,
 		navigation: PropTypes.object,
 		isMasterDetail: PropTypes.bool,
-		toggleFollowThread: PropTypes.func
+		toggleFollowThread: PropTypes.func,
+		joined: PropTypes.bool
 	};
 
 	constructor(props) {
@@ -56,6 +59,10 @@ class RightButtonsContainer extends Component {
 		const {
 			isFollowingThread, tunread, tunreadUser, tunreadGroup
 		} = this.state;
+		const { teamId } = this.props;
+		if (nextProps.teamId !== teamId) {
+			return true;
+		}
 		if (nextState.isFollowingThread !== isFollowingThread) {
 			return true;
 		}
@@ -109,6 +116,21 @@ class RightButtonsContainer extends Component {
 		});
 	}
 
+	goTeamChannels = () => {
+		logEvent(events.ROOM_GO_TEAM_CHANNELS);
+		const {
+			navigation, isMasterDetail, teamId
+		} = this.props;
+		if (isMasterDetail) {
+			navigation.navigate('ModalStackNavigator', {
+				screen: 'TeamChannelsView',
+				params: { teamId }
+			});
+		} else {
+			navigation.navigate('TeamChannelsView', { teamId });
+		}
+	}
+
 	goThreadsView = () => {
 		logEvent(events.ROOM_GO_THREADS);
 		const {
@@ -124,12 +146,12 @@ class RightButtonsContainer extends Component {
 	goSearchView = () => {
 		logEvent(events.ROOM_GO_SEARCH);
 		const {
-			rid, navigation, isMasterDetail
+			rid, t, navigation, isMasterDetail
 		} = this.props;
 		if (isMasterDetail) {
 			navigation.navigate('ModalStackNavigator', { screen: 'SearchMessagesView', params: { rid, showCloseModal: true } });
 		} else {
-			navigation.navigate('SearchMessagesView', { rid });
+			navigation.navigate('SearchMessagesView', { rid, t });
 		}
 	}
 
@@ -146,7 +168,9 @@ class RightButtonsContainer extends Component {
 		const {
 			isFollowingThread, tunread, tunreadUser, tunreadGroup
 		} = this.state;
-		const { t, tmid, threadsEnabled } = this.props;
+		const {
+			t, tmid, threadsEnabled, teamId, joined
+		} = this.props;
 		if (t === 'l') {
 			return null;
 		}
@@ -163,6 +187,13 @@ class RightButtonsContainer extends Component {
 		}
 		return (
 			<HeaderButton.Container>
+				{isTeamRoom({ teamId, joined }) ? (
+					<HeaderButton.Item
+						iconName='channel-public'
+						onPress={this.goTeamChannels}
+						testID='room-view-header-team-channels'
+					/>
+				) : null}
 				{threadsEnabled ? (
 					<HeaderButton.Item
 						iconName='threads'

@@ -3,10 +3,12 @@ const {
 } = require('detox');
 const data = require('../../data');
 const { navigateToLogin } = require('../../helpers/app');
+const { prepareAndroid } = require('../../helpers/platformFunctions');
 
 describe('Forgot password screen', () => {
 	before(async() => {
-		await device.launchApp({ newInstance: true });
+		await device.launchApp({ permissions: { notifications: 'YES' }, delete: true });
+		await prepareAndroid();
 		await navigateToLogin();
 		await element(by.id('login-view-forgot-password')).tap();
 		await waitFor(element(by.id('forgot-password-view'))).toExist().withTimeout(2000);
@@ -30,6 +32,7 @@ describe('Forgot password screen', () => {
 		it('should reset password and navigate to login', async() => {
 			await element(by.id('forgot-password-view-email')).replaceText(data.users.existing.email);
 			await element(by.id('forgot-password-view-submit')).tap();
+			await waitFor(element(by.text('OK'))).toExist().withTimeout(10000);
 			await element(by.text('OK')).tap();
 			await waitFor(element(by.id('login-view'))).toBeVisible().withTimeout(60000);
 		});

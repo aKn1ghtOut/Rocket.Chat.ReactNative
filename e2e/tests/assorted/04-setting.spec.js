@@ -3,13 +3,19 @@ const {
 } = require('detox');
 const { navigateToLogin, login, tapBack } = require('../../helpers/app');
 
+const platformTypes = require('../../helpers/platformTypes');
+const { prepareAndroid } = require('../../helpers/platformFunctions');
+
 const data = require('../../data');
 
 const testuser = data.users.regular
 
 describe('Settings screen', () => {
+	let alertButtonType;
 	before(async() => {
 		await device.launchApp({ permissions: { notifications: 'YES' }, delete: true });
+		await prepareAndroid();
+		({ alertButtonType } = platformTypes[device.getPlatform()]);
 		await navigateToLogin();
 		await login(testuser.username, testuser.password);
 		await waitFor(element(by.id('rooms-list-view'))).toBeVisible().withTimeout(10000);
@@ -63,27 +69,12 @@ describe('Settings screen', () => {
 	});
 
 	describe('Usage', async() => {
-		it('should navigate to language view', async() => {
-			await element(by.id('settings-view-language')).tap();
-			await waitFor(element(by.id('language-view'))).toBeVisible().withTimeout(60000);
-			await expect(element(by.id('language-view-zh-CN'))).toExist();
-			await expect(element(by.id('language-view-de'))).toExist();
-			await expect(element(by.id('language-view-en'))).toExist();
-			await expect(element(by.id('language-view-fr'))).toExist();
-			await expect(element(by.id('language-view-pt-BR'))).toExist();
-			await expect(element(by.id('language-view-pt-PT'))).toExist();
-			await expect(element(by.id('language-view-ru'))).toExist();
-			await tapBack();
-		});
-	
 		it('should tap clear cache and navigate to roomslistview', async() => {
 			await waitFor(element(by.id('settings-view'))).toBeVisible().withTimeout(2000);
 			await element(by.id('settings-view-clear-cache')).tap();
 			await waitFor(element(by.text('This will clear all your offline data.'))).toExist().withTimeout(2000);
-			await element(by.label('Clear').and(by.type('_UIAlertControllerActionView'))).tap(); 
+			await element(by.text('Clear').and(by.type(alertButtonType))).tap(); 
 			await waitFor(element(by.id('rooms-list-view'))).toBeVisible().withTimeout(5000);
-			// Database was cleared, so the room shouldn't be there anymore while it's fetched again from the server
-			await waitFor(element(by.id(`rooms-list-view-item-${ data.groups.private.name }`))).toNotExist().withTimeout(10000);
 			await waitFor(element(by.id(`rooms-list-view-item-${ data.groups.private.name }`))).toExist().withTimeout(10000);
 		})
 	});

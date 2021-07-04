@@ -3,8 +3,10 @@ const {
 } = require('detox');
 const data = require('../../data');
 const { navigateToLogin, login, checkServer } = require('../../helpers/app');
+const { prepareAndroid } = require('../../helpers/platformFunctions');
 
 const reopenAndCheckServer = async(server) => {
+	await device.terminateApp();
 	await device.launchApp({ permissions: { notifications: 'YES' } });
 	await waitFor(element(by.id('rooms-list-view'))).toBeVisible().withTimeout(6000);
 	await checkServer(server);
@@ -13,6 +15,7 @@ const reopenAndCheckServer = async(server) => {
 describe('Change server', () => {
 	before(async() => {
 		await device.launchApp({ permissions: { notifications: 'YES' }, delete: true });
+		await prepareAndroid();
 		await navigateToLogin();
 		await login(data.users.regular.username, data.users.regular.password);
 		await waitFor(element(by.id('rooms-list-view'))).toBeVisible().withTimeout(10000);
@@ -24,9 +27,8 @@ describe('Change server', () => {
 		await element(by.id('rooms-list-header-server-add')).tap();
 
 		await waitFor(element(by.id('new-server-view'))).toBeVisible().withTimeout(6000);
-		await element(by.id('new-server-view-input')).replaceText(data.alternateServer);
-		await element(by.id('new-server-view-button')).tap();
-		await waitFor(element(by.id('workspace-view'))).toBeVisible().withTimeout(6000);
+		await element(by.id('new-server-view-input')).typeText(`${data.alternateServer}\n`);
+		await waitFor(element(by.id('workspace-view'))).toBeVisible().withTimeout(10000);
 		await reopenAndCheckServer(data.server);
 	});
 

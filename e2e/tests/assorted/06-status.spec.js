@@ -2,6 +2,7 @@ const {
 	expect, element, by, waitFor
 } = require('detox');
 const { navigateToLogin, login, sleep } = require('../../helpers/app');
+const { prepareAndroid } = require('../../helpers/platformFunctions');
 
 const data = require('../../data');
 const testuser = data.users.regular
@@ -13,6 +14,7 @@ async function waitForToast() {
 describe('Status screen', () => {
 	before(async () => {
 		await device.launchApp({ permissions: { notifications: 'YES' }, delete: true });
+		await prepareAndroid();
 		await navigateToLogin();
 		await login(testuser.username, testuser.password);
 
@@ -41,10 +43,10 @@ describe('Status screen', () => {
 		});
 
 		it('should change status text', async () => {
-			await element(by.id('status-view-input')).replaceText('status-text-new');
+			await element(by.id('status-view-input')).typeText('status-text-new');
 			await element(by.id('status-view-submit')).tap();
 			await waitForToast();
-			await waitFor(element(by.label('status-text-new').withAncestor(by.id('sidebar-custom-status')))).toBeVisible().withTimeout(2000);
+			await waitFor(element(by.text('status-text-new').withAncestor(by.id('sidebar-custom-status')))).toExist().withTimeout(2000);
 		});
 	});
 });

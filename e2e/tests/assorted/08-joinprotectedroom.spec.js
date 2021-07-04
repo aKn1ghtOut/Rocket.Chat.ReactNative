@@ -3,6 +3,7 @@ const {
 } = require('detox');
 const data = require('../../data');
 const { navigateToLogin, login, mockMessage, tapBack, sleep, searchRoom } = require('../../helpers/app');
+const { prepareAndroid } = require('../../helpers/platformFunctions');
 
 const testuser = data.users.regular
 const room = data.channels.detoxpublicprotected.name
@@ -10,14 +11,8 @@ const joinCode = data.channels.detoxpublicprotected.joinCode
 
 async function navigateToRoom() {
 	await searchRoom(room);
-	await waitFor(element(by.id(`rooms-list-view-item-${ room }`))).toBeVisible().withTimeout(60000);
 	await element(by.id(`rooms-list-view-item-${ room }`)).tap();
 	await waitFor(element(by.id('room-view'))).toBeVisible().withTimeout(5000);
-}
-
-async function navigateToRoomActions() {
-	await element(by.id('room-view-header-actions')).tap();
-	await waitFor(element(by.id('room-actions-view'))).toBeVisible().withTimeout(5000);
 }
 
 async function openJoinCode() {
@@ -25,9 +20,10 @@ async function openJoinCode() {
 	await waitFor(element(by.id('join-code'))).toBeVisible().withTimeout(5000);
 }
 
-describe('Join public room', () => {
+describe('Join protected room', () => {
 	before(async() => {
 		await device.launchApp({ permissions: { notifications: 'YES' }, delete: true });
+		await prepareAndroid();
 		await navigateToLogin();
 		await login(testuser.username, testuser.password);
 		await navigateToRoom();

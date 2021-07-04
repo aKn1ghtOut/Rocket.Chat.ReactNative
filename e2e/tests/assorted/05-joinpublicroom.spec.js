@@ -4,24 +4,29 @@ const {
 const data = require('../../data');
 const { navigateToLogin, login, mockMessage, tapBack, sleep, searchRoom } = require('../../helpers/app');
 
+const platformTypes = require('../../helpers/platformTypes');
+const { prepareAndroid } = require('../../helpers/platformFunctions');
+
 const testuser = data.users.regular
 const room = data.channels.detoxpublic.name;
 
 async function navigateToRoom() {
 	await searchRoom(room);
-	await waitFor(element(by.id(`rooms-list-view-item-${ room }`))).toBeVisible().withTimeout(60000);
 	await element(by.id(`rooms-list-view-item-${ room }`)).tap();
 	await waitFor(element(by.id('room-view'))).toBeVisible().withTimeout(5000);
 }
 
 async function navigateToRoomActions() {
-	await element(by.id('room-view-header-actions')).tap();
+	await element(by.id('room-header')).tap();
 	await waitFor(element(by.id('room-actions-view'))).toBeVisible().withTimeout(5000);
 }
 
 describe('Join public room', () => {
+	let scrollViewType;
 	before(async() => {
 		await device.launchApp({ permissions: { notifications: 'YES' }, delete: true });
+		await prepareAndroid();
+		({ scrollViewType } = platformTypes[device.getPlatform()]);
 		await navigateToLogin();
 		await login(testuser.username, testuser.password);
 		await navigateToRoom();
@@ -30,7 +35,7 @@ describe('Join public room', () => {
 	describe('Render', async() => {
 		it('should have room screen', async() => {
 			await expect(element(by.id('room-view'))).toBeVisible();
-		});
+		}); 
 
 		// it('should have messages list', async() => {
 		// 	await expect(element(by.id('room-view-messages'))).toBeVisible();
@@ -39,7 +44,7 @@ describe('Join public room', () => {
 		// Render - Header
 		describe('Header', async() => {
 			it('should have actions button ', async() => {
-				await expect(element(by.id('room-view-header-actions'))).toBeVisible();
+				await expect(element(by.id('room-header'))).toBeVisible();
 			});
 		});
 
@@ -64,7 +69,7 @@ describe('Join public room', () => {
 
 		describe('Room Actions', async() => {
 			before(async() => {
-				await navigateToRoomActions('c');
+				await navigateToRoomActions();
 			});
 
 			it('should have room actions screen', async() => {
@@ -99,12 +104,7 @@ describe('Join public room', () => {
 				await expect(element(by.id('room-actions-starred'))).toBeVisible();
 			});
 
-			it('should have search', async() => {
-				await expect(element(by.id('room-actions-search'))).toBeVisible();
-			});
-
 			it('should have share', async() => {
-				await element(by.type('UIScrollView')).atIndex(1).swipe('down');
 				await expect(element(by.id('room-actions-share'))).toBeVisible();
 			});
 
@@ -143,7 +143,7 @@ describe('Join public room', () => {
 		});
 
 		it('should have disable notifications and leave channel', async() => {
-			await navigateToRoomActions('c');
+			await navigateToRoomActions();
 			await expect(element(by.id('room-actions-view'))).toBeVisible();
 			await expect(element(by.id('room-actions-info'))).toBeVisible();
 			// await expect(element(by.id('room-actions-voice'))).toBeVisible();
@@ -152,11 +152,11 @@ describe('Join public room', () => {
 			await expect(element(by.id('room-actions-files'))).toBeVisible();
 			await expect(element(by.id('room-actions-mentioned'))).toBeVisible();
 			await expect(element(by.id('room-actions-starred'))).toBeVisible();
-			await expect(element(by.id('room-actions-search'))).toBeVisible();
-			await element(by.type('UIScrollView')).atIndex(1).swipe('down');
+			await element(by.type(scrollViewType)).atIndex(1).swipe('down');
 			await expect(element(by.id('room-actions-share'))).toBeVisible();
 			await expect(element(by.id('room-actions-pinned'))).toBeVisible();
 			await expect(element(by.id('room-actions-notifications'))).toBeVisible();
+			await element(by.type(scrollViewType)).atIndex(0).swipe('up');
 			await expect(element(by.id('room-actions-leave-channel'))).toBeVisible();
 		});
 
@@ -166,8 +166,7 @@ describe('Join public room', () => {
 			await expect(element(by.text('Yes, leave it!'))).toBeVisible();
 			await element(by.text('Yes, leave it!')).tap();
 			await waitFor(element(by.id('rooms-list-view'))).toBeVisible().withTimeout(10000);
-			// await element(by.id('rooms-list-view-search')).typeText('');
-			await waitFor(element(by.id(`rooms-list-view-item-${ room }`))).toBeNotVisible().withTimeout(60000);
+			// await waitFor(element(by.id(`rooms-list-view-item-${ room }`))).toBeNotVisible().withTimeout(60000);
 		});
 	});
 });

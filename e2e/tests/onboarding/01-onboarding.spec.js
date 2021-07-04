@@ -2,10 +2,12 @@ const {
 	device, expect, element, by, waitFor
 } = require('detox');
 const data = require('../../data');
+const { prepareAndroid } = require('../../helpers/platformFunctions');
 
 describe('Onboarding', () => {
 	before(async() => {
 		await device.launchApp({ permissions: { notifications: 'YES' }, delete: true });
+		await prepareAndroid();
 		await waitFor(element(by.id('onboarding-view'))).toBeVisible().withTimeout(20000);
 	});
 
@@ -34,8 +36,7 @@ describe('Onboarding', () => {
 		});
 
 		it('should enter an invalid server and get error', async() => {
-			await element(by.id('new-server-view-input')).replaceText('invalidtest');
-			await element(by.id('new-server-view-button')).tap();
+			await element(by.id('new-server-view-input')).typeText('invalidtest\n');
 			const errorText = 'Oops!';
 			await waitFor(element(by.text(errorText))).toBeVisible().withTimeout(60000);
 			await element(by.text('OK')).tap();
@@ -51,8 +52,7 @@ describe('Onboarding', () => {
 			await waitFor(element(by.id('onboarding-view'))).toBeVisible().withTimeout(2000);
 			await element(by.id('join-workspace')).tap();
 			await waitFor(element(by.id('new-server-view'))).toBeVisible().withTimeout(60000);
-			await element(by.id('new-server-view-input')).replaceText(data.server);
-			await element(by.id('new-server-view-button')).tap();
+			await element(by.id('new-server-view-input')).typeText(`${data.server}\n`);
 			await waitFor(element(by.id('workspace-view'))).toBeVisible().withTimeout(60000);
 		});
 	});
